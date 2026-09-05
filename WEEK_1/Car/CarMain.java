@@ -1,77 +1,45 @@
 public class CarMain{
     public static void main(String[]args){
-      
+        try{
         //object with null
         Car bmw=new Car();
-        bmw.show();
-
-        System.out.println("--------------------------");
 
         //object with parameterized
-        Car audi =new Car(5,45,true,1);
-        //toString and show constructor
-        audi.show();
-
-        System.out.println("--------------------------");
+        Car audi =new Car(5,45,1);
 
         //copy
         Car tesla=new Car(bmw);
-        tesla.show();
 
         System.out.println("--------------------------");
-
         //object count
-        System.out.printf("ToTal No of Cars Created: %d",Car.getObjectCount());
+        System.out.printf("ToTal No of Cars Created: %d\n",Car.getObjectCount());
 
         System.out.println("--------------------------");
-
-        //engine start
-        audi.startEngine();
-        bmw.startEngine();
-        tesla.startEngine();
-
+        System.out.println("Audi before gear change");
+        audi.show();
         System.out.println("--------------------------");
 
-        //getters
-        System.out.println(bmw.getSpeed());
-        System.out.println(bmw.getAngle());
-
+        System.out.println("Audi after gear change");
+        audi.gearChange(3);
+        audi.show();
         System.out.println("--------------------------");
 
+        System.out.printf("Is bmw enging start: %b\n",bmw.getIsEngineStart());
+        System.out.println("Using setter on bmw while Engine being off");
         //setter
-        bmw.setSpeedAngle(20,30);
-        
+        bmw.setSpeedAngleGear(25,30,2);
         System.out.println("--------------------------");
 
-        //changeGear
-        bmw.gearChange(3);
+        System.out.println("Using setter on bmw after turning Engine ON");
+        System.out.println("passing 1000 km/h of speed in setter");
+        bmw.startEngine();
+        bmw.setSpeedAngleGear(1000, 30,2);
         bmw.show();
-
         System.out.println("--------------------------");
+        }
 
-        //accelerate
-        audi.accelerates(30);
-        audi.show();
-
-        System.out.println("--------------------------");
-
-        //breaks
-        tesla.breakes();
-
-        System.out.println("--------------------------");
-
-        //moveright
-        bmw.turnRight();
-        bmw.show();
-
-        System.out.println("--------------------------");
-
-        //moveleft
-        audi.turnLeft();
-        audi.show();
-
-        System.out.println("--------------------------");
-
-
+        catch(IllegalArgumentException exception) {
+        System.out.println("Rejected: " + exception.getMessage());
+        }
     }
 }
