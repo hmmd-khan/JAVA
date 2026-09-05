@@ -11,16 +11,19 @@ public class Car {
         this.angle=0;
         this.gear=0;
         this.isEngineStart=false;
-        objectCount++;
+        Car.objectCount++;
     }
 
     //parameterized constructure
-    Car(float speed,float angle,boolean isEngineStart,int gear){
+    Car(float speed,float angle,int gear){
+        validateAngle(angle);
+        validateGear(gear);
+        validateSpeed(speed);
         this.speed=speed;
         this.angle=angle;
-        this.isEngineStart=isEngineStart;
+        this.isEngineStart=true;
         this.gear=gear;
-        objectCount++;
+        Car.objectCount++;
     }
 
     //copy constructor
@@ -29,7 +32,7 @@ public class Car {
         this.angle=other.angle;
         this.isEngineStart=other.isEngineStart;
         this.gear=other.gear;
-        objectCount++;
+        Car.objectCount++;
     }
 
     //objectCount constructor
@@ -37,22 +40,16 @@ public class Car {
         return objectCount;
     }
 
-    boolean startEngine(){
+    //Returns a true boolean value which means engine is ON
+    void startEngine(){
         this.isEngineStart=true;
-        return this.isEngineStart;
+        //return this.isEngineStart;
     }
 
+    //Returns a false boolean value which means engine is OFF
     boolean stopEngine(){
         this.isEngineStart=false;
         return this.isEngineStart;
-    }
-
-    private boolean checkEngine(){
-        if(!isEngineStart){
-            System.out.println("Engine is off, start Engine to perform task");
-            return false;
-        }
-        else return true;
     }
 
     //getter
@@ -65,22 +62,39 @@ public class Car {
         return this.angle;
     }
 
+    public int getGear(){
+        return this.gear;
+    }
+
+    public boolean getIsEngineStart(){
+        return this.isEngineStart;
+    }
+
     //setter
-    public void setSpeedAngle(float speed,float angle){
+    public void setSpeedAngleGear(float speed,float angle,int gear){
+        if(!checkEngine())return;
+        validateGear(gear);
+        validateAngle(angle);
+        validateSpeed(speed);
+        this.gear=gear;
         this.speed=speed;
         this.angle=angle;
     }
 
+    //Increases the speed off Car
     void accelerates(float acc){
+        validateSpeed(acc);
         if(!checkEngine()) return;
         this.speed+=acc;
     }
 
+    //Apply Breaks which results in decreasing speed to zero
     void breakes(){
         if(!checkEngine()) return;
         this.speed=0;
     }
 
+    //Turns the Car Direction into right
     void turnRight(){
         if(!checkEngine()) return;
         if(this.angle<=0)
@@ -88,6 +102,7 @@ public class Car {
         this.angle-=90;
     }
 
+    //Turns the Car Direction into left
     void turnLeft(){
         if(!checkEngine()) return;
         if(this.angle>=360)
@@ -95,7 +110,9 @@ public class Car {
         this.angle+=90;
     }
 
+    //Changes the Gear of Car 
     void gearChange(int gear){
+        validateGear(gear);
         if(!checkEngine()) return;
         
         switch (gear) {
@@ -124,9 +141,36 @@ public class Car {
         }
     }
 
+    //Validates the Engine Current State
+    private boolean checkEngine(){
+        if(!isEngineStart){
+            System.out.println("Engine is off, start Engine to perform task");
+            return false;
+        }
+        else return true;
+    }
+
+    private void validateAngle(float angle){
+        if(!Double.isFinite(angle)||angle>360||angle<0){
+            throw new IllegalArgumentException("Angle should be finite, less than 360 and greater than 0");
+        }
+    }
+
+    private void validateSpeed(float speed){
+        if(!Double.isFinite(speed)||speed>85||gear<0){
+            throw new IllegalArgumentException("Speed should be finite, less than 85 and greater than 0");
+        }
+    }
+
+    private void validateGear(int gear){
+        if(!Double.isFinite(gear)||gear>4||gear<0){
+            throw new IllegalArgumentException("Gear should be finite and greater than zero");
+        }
+    }
+
     //toString constructor
     public String toString(){
-        return "speed is:"+ speed +",\nangle is:"+angle+",\nEngine state:"+isEngineStart+"\nGear is: "+this.gear;
+        return "speed is:"+ this.speed +"km/h,\nangle is:"+this.angle+",degree\nEngine state:"+this.isEngineStart+"\nGear is: "+this.gear;
     }
 
     //show constructor
