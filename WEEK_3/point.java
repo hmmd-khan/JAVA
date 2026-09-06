@@ -1,82 +1,61 @@
 class Point{
-
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private static int objectCount;
 
     //NULL
     Point(){
-        this.x=2;
-        this.y=3;
-        this.objectCount++;
+        validateCoordinates(this.x,this.y);
+        this.x=0;
+        this.y=0;
+        Point.objectCount++;
     }
 
     //PARAMETERIZED
-    Point(int x,int y){
+    Point(float x,float y){
+        validateCoordinates(this.x,this.y);
         this.x=x;
         this.y=y;
-        this.objectCount++;
+        Point.objectCount++;
     }
 
     //COPY
     Point(Point p){
         this.x=p.x;
         this.y=p.y;
-        this.objectCount++;
+        Point.objectCount++;
     }
 
     //GET
-    public int getX(){
+    public float getX(){
         return this.x;
     }
-    public int getY(){
+    public float getY(){
         return this.y;
     }
 
     //SET
-    public void setXY(int x,int y){
+    public void setXY(float x,float y){
+        validateCoordinates(this.x,this.y);
         this.x=x;
         this.y=y;
     }
 
-    boolean checkGrid(){
-        if(this.x<=10 && this.x>=1 && this.y>=1 && this.y<=10){
-            return true;
-        }
-        else 
-            return false;
+    //translating the co-ordinate of point
+    public void translatePoint(float x,float y){
+        validateTranslation(this.x,x,this.y,y);
+        this.x=x;
+        this.y=y;
     }
 
-    //PRINT
-    void print(){
-        if(checkGrid()){
-            for(int i=1;i<=10;i++){
-                for(int j=1;j<=10;j++){
-                    if(i==this.x && j==this.y)
-                        System.out.print(".");
-                    else
-                        System.out.print(" ");
-                }
-                System.out.println();
-            }
-        }
-        else
-            System.out.println("point is out of defined quadrant");
+    //Finding MIDPOINT of two points
+    public Point midPoint(Point obj){
+        return new Point((this.x+obj.x)/2 ,(this.y+obj.y)/2);
     }
 
-    //MIDPOINT
-    Point midPoint(Point p){
-        return new Point((this.x+p.x)/2 ,(this.y+p.y)/2);
-    }
-
-    //SUBTRACT
-    Point subtract(Point p){
-       return new Point(this.x-p.x,this.y-p.y);
-    }
-
-    //ADDING POINTS 
-    Point add(Point p){
-        return new Point(this.x+p.x,this.y+p.y);
+    //Subtracting two Points which results in a vector 
+    public Vector subtract(Point obj){
+       return new Vector(this.x-obj.x,this.y-obj.y);
     }
 
     //QUADRANT OF POINT
@@ -101,43 +80,61 @@ class Point{
 
         else 
             return "X-AXIS";
-
     }
 
     //DISTANCE OF POINT TO POINT
-    double distancePoint(Point p){
-        return Math.sqrt(Math.pow(this.x-p.x,2) + Math.pow(this.y-p.y,2));
+    double PointDistance(Point obj){
+        validateDistance(this.x, obj.x, this.y, obj.y);
+        return Math.sqrt(Math.pow(this.x-obj.x,2) + Math.pow(this.y-obj.y,2));
     }
 
     //DISTANCE FROM ORIGIN TO POINT
-    double distanceOrigin(){
+    double originDistance(){
         return Math.sqrt(Math.pow(this.x-0,2) + Math.pow(this.y-0,2));
     }
 
      //SLOPE OF LINE
-    double slope(Point p){
-        if(this.x!=p.x)
-            return (this.x-p.x)/(this.y-p.y);
-        else 
-            return Double.POSITIVE_INFINITY;
-            
+    double slope(Point obj){
+        validateSlope(this.x, obj.x);
+        return (this.y-obj.y)/(this.x-obj.x);     
+    }
+
+    //validations
+    private static void validateCoordinates(float x, float y){
+        if(!Float.isFinite(x)||!Float.isFinite(y))
+            throw new IllegalArgumentException("Both Components must be finite");
+    }
+
+    private static void validateTranslation(float x1,float x2,float y1,float y2){
+        if(x1==x2 && y1==y2 ||!Float.isFinite(x2)||!Float.isFinite(y2))
+            throw new IllegalArgumentException("Coordinates must be finite and unique.");
+
+    }
+
+    private static void validateSlope(float x1 ,float x2){
+        if(x1==x2)
+            throw new  IllegalArgumentException("Slope cannot be found because The line is perfectly vertical.\n\t  x1 and x2 should be unique.");
+    }
+
+    private static void validateDistance(float x1 ,float x2,float y1,float y2){
+        if(x1==x2&&y1==y2)
+            throw new  IllegalArgumentException("points must not coincide.");
     }
 
     //OBJECTCOUNT
-    public int getObjectCount(){
-        return this.objectCount;
+    public static int getObjectCount(){
+        return Point.objectCount;
     }
 
     //TOSTRING
     @Override
     public String toString(){
-        return String.format("x is: "+this.x+" y is: "+this.y," Quadrant is:"+this.quadrant()+" Distance from origin is : "+this.distanceOrigin()+ "object count is: "+Point.objectCount);
-        
-     }
+        return "x is: "+this.x+" y is: "+this.y;
+    }
 
     //SHOW
     public void show(){
-        System.out.println(toString());
+        System.out.println(this.toString());
     }
 }
 
